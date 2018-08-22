@@ -11,23 +11,26 @@ import static ru.pingwin.inst.Actions.gotoMyInstagramHome;
 import static ru.pingwin.inst.Constants.NUMBER_OF_CHECKED_PUBLICATIONS;
 
 public class LikeUserLikers {
-
+    private ActionCounter actionCounter = new ActionCounter();
     private String accountName = "wakephoria";
+    private LikeTimer likeTimer = new LikeTimer();
     @Test
-    public void startLiking(){
+    public void startLiking() throws InterruptedException {
+
+
+
         Configuration.browser="Chrome";
         gotoMyInstagramHome();
-        $(By.xpath(".//input[@placeholder='Поиск']")).setValue("@"+accountName);
+        //$(By.xpath(".//input[@placeholder='Поиск']")).setValue("@"+accountName);
+        $(By.className("XTCLo")).setValue("@"+accountName);
         $(By.xpath(".//a[@href='/"+accountName+"/']")).click();
-
-
 
         ElementsCollection elements = $$(By.className("_9AhH0"));
         for(int i=0; i<elements.size(); i++){
             elements.get(i).click();
 
-            if(publicationIsVideo()){
-                inLog("Видео публикация");
+            if(isPublicationVideo()){
+                Logger.inLog("Видео публикация", 3);
                 executeJavaScript("window.history.go(-1)");
             }else{
                 likeUsersPublications();
@@ -37,25 +40,28 @@ public class LikeUserLikers {
         }
     }
 
-    private Boolean publicationIsVideo(){
+    private Boolean isPublicationVideo(){
         return $$(By.partialLinkText("Просмотры: ")).size() == 1;
     }
 
-    private void likeUsersPublications(){
+    private void likeUsersPublications() throws InterruptedException {
         for(int i=0; i<2000; i++) {
-            $(By.partialLinkText(" отметок \"Нравится\"")).click();
+            $(By.className("zV_Nj")).click();
+            //$(By.partialLinkText(" отметок \"Нравится\"")).click();
             ElementsCollection myFollowers = $$(By.className("NroHT"));
             WebElement ele = $$(By.className("NroHT")).get(i);
             String nick = myFollowers.get(i).findElement(By.className("FPmhX ")).getText();
+            Logger.inLog(i+") ---------------nick = "+nick, 0);
             executeJavaScript("arguments[0].scrollIntoView();", ele);
             myFollowers.get(i).findElement(By.className("FPmhX ")).click();
-            sleep(2000);
+            sleep(1000);
             likePublicationsOfOneUser();
             executeJavaScript("window.history.go(-1)");
+            Logger.inLog("ACTIONS like: "+actionCounter.getNumberOfLikes(), 0);
         }
     }
 
-    private void likePublicationsOfOneUser(){
+    private void likePublicationsOfOneUser() throws InterruptedException {
         int size = $$(By.className("_9AhH0")).size();
         if(size > 0){
             if(size > NUMBER_OF_CHECKED_PUBLICATIONS){
@@ -64,18 +70,29 @@ public class LikeUserLikers {
 
             for(int i=0; i<size; i++){
                 $$(By.className("_9AhH0")).get(i).click();
-                ElementsCollection likes = $$(By.xpath(".//span[@aria-label='Нравится']"));
+                sleep(1000);
+                //ElementsCollection likes = $$(By.xpath(".//span[@aria-label='Нравится']"));
+                ElementsCollection likes = $$(By.className("glyphsSpriteHeart__outline__24__grey_9"));
                 if(likes.size() > 0){
-
+                    likeTimer.sleepBeforeLikeIfNeed();
                     likes.get(0).click();
+                    actionCounter.Liked();
+                    Logger.inLog("click Like publication", 2);
+                }else{
+                    Logger.inLog("Publication already liked", 2);
                 }
                 executeJavaScript("window.history.go(-1)");
+            }
+        }else{
+            sleep(1000);
+            if($$(By.className("rkEop")).size() == 1){
+                Logger.inLog("This Account is Private",1);
+            }else{
+                Logger.inLog("!!!!!!!!!!!!!!", 1);
             }
         }
 
     }
 
-    public static void inLog(String str){
-        System.out.println(str);
-    }
+
 }
