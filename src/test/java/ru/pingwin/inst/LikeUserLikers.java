@@ -6,22 +6,29 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+
 import static com.codeborne.selenide.Selenide.*;
 import static ru.pingwin.inst.Actions.gotoMyInstagramHome;
 import static ru.pingwin.inst.Constants.NUMBER_OF_CHECKED_PUBLICATIONS;
 
 public class LikeUserLikers {
     private ActionCounter actionCounter = new ActionCounter();
+    private ArrayList<String> accounts = new ArrayList<>();
     private String accountName = "wakephoria";
     private LikeTimer likeTimer = new LikeTimer();
+
+    private void initAccountsArray(){
+        accounts.add("wakephoria");
+        accounts.add("wakestylevera");
+
+        accountName = accounts.get(1);
+    }
     @Test
     public void startLiking() throws InterruptedException {
-
-
-
+        initAccountsArray();
         Configuration.browser="Chrome";
         gotoMyInstagramHome();
-        //$(By.xpath(".//input[@placeholder='Поиск']")).setValue("@"+accountName);
         $(By.className("XTCLo")).setValue("@"+accountName);
         $(By.xpath(".//a[@href='/"+accountName+"/']")).click();
 
