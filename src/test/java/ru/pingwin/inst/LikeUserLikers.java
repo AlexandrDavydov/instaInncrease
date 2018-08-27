@@ -30,8 +30,11 @@ public class LikeUserLikers {
         accounts.add("wake_team");//8
         accounts.add("wake_time");//9
         accounts.add("malibuwakeclub");//10
+        accounts.add("wakesummer_wakeclub");//11
+        accounts.add("tonyiacconi");//12
+        accounts.add("nicrapa");//13
 
-        accountName = accounts.get(9);
+        accountName = accounts.get(13);
     }
     @Test
     public void startLiking() throws InterruptedException {
@@ -69,6 +72,11 @@ public class LikeUserLikers {
         for(int i=0; i<2000; i++) {
             $(By.className("zV_Nj")).click();
             ElementsCollection myFollowers = $$(By.className("NroHT"));
+            if(myFollowers.size()-1 == i){
+                Logger.inLog("============publications processed==============", 0);
+                executeJavaScript("window.history.go(-1)");
+                return;
+            }
             WebElement ele = $$(By.className("NroHT")).get(i);
             String nick = myFollowers.get(i).findElement(By.className("FPmhX ")).getText();
             Logger.inLog(i+") ---------------nick = "+nick, 0);
@@ -78,9 +86,7 @@ public class LikeUserLikers {
             likePublicationsOfOneUser();
             executeJavaScript("window.history.go(-1)");
             Logger.inLog("ACTIONS like: "+actionCounter.getNumberOfLikes(), 0);
-            if(myFollowers.size()-1 == i){
-                Logger.inLog("============publications processed==============", 0);
-            }
+
         }
     }
 
