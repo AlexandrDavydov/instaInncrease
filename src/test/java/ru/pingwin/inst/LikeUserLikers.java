@@ -33,8 +33,15 @@ public class LikeUserLikers {
         accounts.add("wakesummer_wakeclub");//11
         accounts.add("tonyiacconi");//12
         accounts.add("nicrapa");//13
+        accounts.add("rustymalinoski");//14
+        accounts.add("wakestylespot");//15
+        accounts.add("wakedivision");//16
+        accounts.add("wakemount");//17
+        accounts.add("wakeweekend_official");//18
+        accounts.add("multiriders");//19
+        accounts.add("wakeupwakestation");//20
 
-        accountName = accounts.get(13);
+        accountName = accounts.get(20);
     }
     @Test
     public void startLiking() throws InterruptedException {
@@ -58,13 +65,14 @@ public class LikeUserLikers {
     }
 
     private ElementsCollection getAccountHomeAndGetPublications(){
+        Logger.inLog("============"+accountName+"=============", 0);
         $(By.className("XTCLo")).setValue("@"+accountName);
         $(By.xpath(".//a[@href='/"+accountName+"/']")).click();
         return $$(By.className("_9AhH0"));
     }
 
     private Boolean isPublicationVideo(){
-        return $$(By.partialLinkText("Просмотры: ")).size() == 1;
+        return $$(By.className("vcOH2")).size() == 1;
     }
 
     private void likeUsersPublications() throws InterruptedException {
